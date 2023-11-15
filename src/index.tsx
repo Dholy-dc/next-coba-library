@@ -9,7 +9,7 @@ import {
 } from './fetchaction'
 import { BellOutlined } from '@ant-design/icons'
 
-export const MessageComponent = ({
+const MessageComponent = ({
   style,
   nip,
   nama,
@@ -165,9 +165,9 @@ export const MessageComponent = ({
         }
       })
       .catch((err) => {
+        console.log(err)
         setLoadingLeftContent(false)
         setDataMessageRecieve([])
-        console.log(err)
       })
 
     getMessageRecieve(
@@ -186,10 +186,10 @@ export const MessageComponent = ({
           setDataMessageSender([])
         }
       })
-      .catch((err: any) => {
+      .catch((err) => {
+        console.log(err)
         setLoadingLeftContent(false)
         setDataMessageSender([])
-        console.log(err)
       })
   }, [])
 
@@ -227,3 +227,5 @@ export const MessageComponent = ({
     </div>
   )
 }
+
+export default MessageComponent

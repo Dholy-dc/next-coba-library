@@ -1368,9 +1368,9 @@ var MessageComponent = function MessageComponent(_ref) {
         setDataMessageRecieve([]);
       }
     })["catch"](function (err) {
+      console.log(err);
       setLoadingLeftContent(false);
       setDataMessageRecieve([]);
-      console.log(err);
     });
     getMessageRecieve(BASE_PATH_NOTIF.get_by_from + nip + '/0/50', dataauthusman).then(function (data) {
       var _data$data5;
@@ -1387,9 +1387,9 @@ var MessageComponent = function MessageComponent(_ref) {
         setDataMessageSender([]);
       }
     })["catch"](function (err) {
+      console.log(err);
       setLoadingLeftContent(false);
       setDataMessageSender([]);
-      console.log(err);
     });
   }, []);
   return React.createElement("div", {
@@ -1430,5 +1430,5 @@ var MessageComponent = function MessageComponent(_ref) {
   }));
 };
 
-exports.MessageComponent = MessageComponent;
+module.exports = MessageComponent;
 //# sourceMappingURL=index.js.map

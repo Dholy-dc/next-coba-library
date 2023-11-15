@@ -1,5 +1,5 @@
 import * as React from 'react';
-export declare const MessageComponent: ({ style, nip, nama, id_user, kode_group, token_lama, token_baru, url_foto_user }: {
+declare const MessageComponent: ({ style, nip, nama, id_user, kode_group, token_lama, token_baru, url_foto_user }: {
     style: React.CSSProperties;
     nip: string;
     nama: string;
@@ -9,3 +9,4 @@ export declare const MessageComponent: ({ style, nip, nama, id_user, kode_group,
     token_baru: string | null;
     url_foto_user: string | null;
 }) => React.JSX.Element;
+export default MessageComponent;

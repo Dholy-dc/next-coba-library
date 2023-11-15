@@ -7,138 +7,94 @@ import axios from 'axios';
 import 'moment/locale/id';
 import { Editor } from '@tinymce/tinymce-react';
 
-var Roboto = "Roboto, sans-serif";
-var DmSerif = "DM Sans, sans-serif";
-var Poppins = "Poppins, sans-serif";
+const Roboto = "Roboto, sans-serif";
+const DmSerif = "DM Sans, sans-serif";
+const Poppins = "Poppins, sans-serif";
 
-var BASE_URL_NOTIF = "https://asset.ut.ac.id:3012";
-var BASE_URL = "https://asset.ut.ac.id:3012/notif/testing";
-var BASE_URL_HRIS = "https://be2.ut.ac.id/hrd";
-var BASE_PATH_NOTIF = {
-  create_collection: BASE_URL + "/collection/",
-  get_by_from: BASE_URL + "/messages/from/",
-  get_by_recieve: BASE_URL + "/messages/to/",
-  get_by_id: BASE_URL + "/message/",
-  post_message: BASE_URL + "/message/",
-  get_all: BASE_URL + "/message/",
-  read_message: BASE_URL + "/read_message/",
-  post_single_message: BASE_URL + "/testing/message/",
-  post_many_message: BASE_URL + "/messages/Many/"
+const BASE_URL_NOTIF = "https://asset.ut.ac.id:3012";
+const BASE_URL = "https://asset.ut.ac.id:3012/notif/testing";
+const BASE_URL_HRIS = "https://be2.ut.ac.id/hrd";
+const BASE_PATH_NOTIF = {
+  create_collection: `${BASE_URL}/collection/`,
+  get_by_from: `${BASE_URL}/messages/from/`,
+  get_by_recieve: `${BASE_URL}/messages/to/`,
+  get_by_id: `${BASE_URL}/message/`,
+  post_message: `${BASE_URL}/message/`,
+  get_all: `${BASE_URL}/message/`,
+  read_message: `${BASE_URL}/read_message/`,
+  post_single_message: `${BASE_URL}/testing/message/`,
+  post_many_message: `${BASE_URL}/messages/Many/`
 };
-var BASE_PATH_HRIS = {
-  userdatabyniparray: BASE_URL_HRIS + "/pegawai/get-nip-array",
-  get_pegawai: BASE_URL_HRIS + "/pegawai/",
-  get_pegawai_by_nama: BASE_URL_HRIS + "/pegawai/get-nama"
+const BASE_PATH_HRIS = {
+  userdatabyniparray: `${BASE_URL_HRIS}/pegawai/get-nip-array`,
+  get_pegawai: `${BASE_URL_HRIS}/pegawai/`,
+  get_pegawai_by_nama: `${BASE_URL_HRIS}/pegawai/get-nama`
 };
-var socketNotif = io(BASE_URL_NOTIF, {
+const socketNotif = io(BASE_URL_NOTIF, {
   autoConnect: false,
   secure: true
 });
 
-// A type of promise-like that resolves synchronously and supports only one observer
-
-const _iteratorSymbol = /*#__PURE__*/ typeof Symbol !== "undefined" ? (Symbol.iterator || (Symbol.iterator = Symbol("Symbol.iterator"))) : "@@iterator";
-
-const _asyncIteratorSymbol = /*#__PURE__*/ typeof Symbol !== "undefined" ? (Symbol.asyncIterator || (Symbol.asyncIterator = Symbol("Symbol.asyncIterator"))) : "@@asyncIterator";
-
-// Asynchronously call a function and send errors to recovery continuation
-function _catch(body, recover) {
-	try {
-		var result = body();
-	} catch(e) {
-		return recover(e);
-	}
-	if (result && result.then) {
-		return result.then(void 0, recover);
-	}
-	return result;
-}
-
-var axiosGet = function axiosGet(url, dataauthusman) {
-  return Promise.resolve(_catch(function () {
-    return Promise.resolve(axios.get(url, dataauthusman));
-  }, function (err) {
+const axiosGet = async (url, dataauthusman) => {
+  try {
+    const res = await axios.get(url, dataauthusman);
+    return res;
+  } catch (err) {
     return err;
-  }));
+  }
 };
-var axiosPost = function axiosPost(url, data, dataauthusman) {
-  return Promise.resolve(_catch(function () {
-    return Promise.resolve(axios.post(url, data, dataauthusman));
-  }, function (err) {
+const axiosPost = async (url, data, dataauthusman) => {
+  try {
+    const res = await axios.post(url, data, dataauthusman);
+    return res;
+  } catch (err) {
     return err;
-  }));
-};
-
-var getMessageRecieve = function getMessageRecieve(url, dataauthusman) {
-  try {
-    return Promise.resolve(axiosGet(url, dataauthusman));
-  } catch (e) {
-    return Promise.reject(e);
-  }
-};
-var getDataPegawaiByNip = function getDataPegawaiByNip(dataauthusman, data) {
-  try {
-    var body = {
-      nip: data
-    };
-    return Promise.resolve(axiosPost(BASE_PATH_HRIS.userdatabyniparray, body, dataauthusman));
-  } catch (e) {
-    return Promise.reject(e);
-  }
-};
-var getPegawaiByNama = function getPegawaiByNama(dataauthusman, nama) {
-  try {
-    var datanama = {
-      nama: nama
-    };
-    return Promise.resolve(axiosPost(BASE_PATH_HRIS.get_pegawai_by_nama, datanama, dataauthusman));
-  } catch (e) {
-    return Promise.reject(e);
-  }
-};
-var createColllection = function createColllection(dataauthusman, nip) {
-  try {
-    return Promise.resolve(axiosGet(BASE_PATH_NOTIF.create_collection + nip, dataauthusman));
-  } catch (e) {
-    return Promise.reject(e);
-  }
-};
-var getPegawai = function getPegawai(dataauthusman, limit, offset) {
-  try {
-    return Promise.resolve(axiosGet(BASE_PATH_HRIS.get_pegawai + (limit + "/" + offset), dataauthusman));
-  } catch (e) {
-    return Promise.reject(e);
-  }
-};
-var postManyMessage = function postManyMessage(dataauthusman, body, nip) {
-  try {
-    return Promise.resolve(axiosPost(BASE_PATH_NOTIF.post_many_message + nip, body, dataauthusman));
-  } catch (e) {
-    return Promise.reject(e);
-  }
-};
-var fetchReadMessage = function fetchReadMessage(dataauthusman, id) {
-  try {
-    return Promise.resolve(axiosGet(BASE_PATH_NOTIF.read_message + id, dataauthusman));
-  } catch (e) {
-    return Promise.reject(e);
   }
 };
 
-var findDataReadMessage = function findDataReadMessage(dataMessage, dataRead) {
-  try {
-    var arrayDataMessage = dataMessage;
-    var findIndexRead = dataMessage === null || dataMessage === void 0 ? void 0 : dataMessage.findIndex(function (a) {
-      return a._id === (dataRead === null || dataRead === void 0 ? void 0 : dataRead._id);
-    });
-    arrayDataMessage[findIndexRead] = dataRead;
-    return Promise.resolve(arrayDataMessage);
-  } catch (e) {
-    return Promise.reject(e);
-  }
+const getMessageRecieve = async (url, dataauthusman) => {
+  const res = await axiosGet(url, dataauthusman);
+  return res;
+};
+const getDataPegawaiByNip = async (dataauthusman, data) => {
+  const body = {
+    nip: data
+  };
+  const res = await axiosPost(BASE_PATH_HRIS.userdatabyniparray, body, dataauthusman);
+  return res;
+};
+const getPegawaiByNama = async (dataauthusman, nama) => {
+  const datanama = {
+    nama: nama
+  };
+  const res = await axiosPost(BASE_PATH_HRIS.get_pegawai_by_nama, datanama, dataauthusman);
+  return res;
+};
+const createColllection = async (dataauthusman, nip) => {
+  const res = await axiosGet(BASE_PATH_NOTIF.create_collection + nip, dataauthusman);
+  return res;
+};
+const getPegawai = async (dataauthusman, limit, offset) => {
+  const res = await axiosGet(BASE_PATH_HRIS.get_pegawai + `${limit}/${offset}`, dataauthusman);
+  return res;
+};
+const postManyMessage = async (dataauthusman, body, nip) => {
+  const res = await axiosPost(BASE_PATH_NOTIF.post_many_message + nip, body, dataauthusman);
+  return res;
+};
+const fetchReadMessage = async (dataauthusman, id) => {
+  const res = await axiosGet(BASE_PATH_NOTIF.read_message + id, dataauthusman);
+  return res;
 };
 
-var SeeWhoOnline = function SeeWhoOnline() {
+const findDataReadMessage = async (dataMessage, dataRead) => {
+  const arrayDataMessage = dataMessage;
+  const findIndexRead = dataMessage === null || dataMessage === void 0 ? void 0 : dataMessage.findIndex(a => a._id === (dataRead === null || dataRead === void 0 ? void 0 : dataRead._id));
+  arrayDataMessage[findIndexRead] = dataRead;
+  return arrayDataMessage;
+};
+
+const SeeWhoOnline = () => {
   return createElement("div", {
     style: {
       display: "flex",
@@ -159,7 +115,7 @@ var SeeWhoOnline = function SeeWhoOnline() {
   }), createElement("p", null, "Page On Progress"));
 };
 
-var GalleryPage = function GalleryPage() {
+const GalleryPage = () => {
   return createElement("div", {
     style: {
       display: "flex",
@@ -180,25 +136,24 @@ var GalleryPage = function GalleryPage() {
   }), createElement("p", null, "Page On Progess"));
 };
 
-var LeftContent = function LeftContent(_ref) {
-  var dataMessageRecieve = _ref.dataMessageRecieve,
-    dataMessageSender = _ref.dataMessageSender,
-    setFocusMessage = _ref.setFocusMessage,
-    focusMessage = _ref.focusMessage,
-    dataPegawai = _ref.dataPegawai,
-    setFocusScreenContent = _ref.setFocusScreenContent,
-    dataauthusman = _ref.dataauthusman,
-    setDataMessageReceive = _ref.setDataMessageReceive,
-    setDataMessageSender = _ref.setDataMessageSender,
-    funtionGetDataPegawai = _ref.funtionGetDataPegawai,
-    nip = _ref.nip,
-    setLoadingRightContent = _ref.setLoadingRightContent,
-    setLoadingLeftContent = _ref.setLoadingLeftContent,
-    loadingLeftContent = _ref.loadingLeftContent;
-  var _useState = useState(1),
-    focusMenuData = _useState[0],
-    setFocusMenuData = _useState[1];
-  var LoadingLeft = function LoadingLeft() {
+const LeftContent = ({
+  dataMessageRecieve,
+  dataMessageSender,
+  setFocusMessage,
+  focusMessage,
+  dataPegawai,
+  setFocusScreenContent,
+  dataauthusman,
+  setDataMessageReceive,
+  setDataMessageSender,
+  funtionGetDataPegawai,
+  nip,
+  setLoadingRightContent,
+  setLoadingLeftContent,
+  loadingLeftContent
+}) => {
+  const [focusMenuData, setFocusMenuData] = useState(1);
+  const LoadingLeft = () => {
     return React__default.createElement("div", {
       style: {
         display: 'flex',
@@ -214,7 +169,7 @@ var LeftContent = function LeftContent(_ref) {
       size: 'large'
     }), React__default.createElement("p", null, "Loading..."));
   };
-  var RenderInbox = function RenderInbox() {
+  const RenderInbox = () => {
     if (loadingLeftContent) {
       return React__default.createElement(LoadingLeft, null);
     }
@@ -222,11 +177,9 @@ var LeftContent = function LeftContent(_ref) {
       style: {
         paddingRight: 5
       }
-    }, dataMessageRecieve === null || dataMessageRecieve === void 0 ? void 0 : dataMessageRecieve.map(function (res, i) {
+    }, dataMessageRecieve === null || dataMessageRecieve === void 0 ? void 0 : dataMessageRecieve.map((res, i) => {
       var _pegawai$TrxUnitKerja, _pegawai$TrxUnitKerja2;
-      var pegawai = dataPegawai === null || dataPegawai === void 0 ? void 0 : dataPegawai.find(function (a) {
-        return a.nip === res.from;
-      });
+      const pegawai = dataPegawai === null || dataPegawai === void 0 ? void 0 : dataPegawai.find(a => a.nip === res.from);
       return React__default.createElement(Badge.Ribbon, {
         text: res !== null && res !== void 0 && res.status_read ? '' : 'Pesan Baru',
         color: 'orange',
@@ -238,22 +191,22 @@ var LeftContent = function LeftContent(_ref) {
           display: res !== null && res !== void 0 && res.status_read ? 'none' : 'block'
         }
       }, React__default.createElement("div", {
-        onClick: function onClick() {
+        onClick: () => {
           setLoadingRightContent(true);
-          fetchReadMessage(dataauthusman, res._id).then(function (data) {
+          fetchReadMessage(dataauthusman, res._id).then(data => {
             var _data$data;
             setLoadingRightContent(false);
             setFocusMessage(res._id);
             setFocusScreenContent('inbox');
             if ((data === null || data === void 0 ? void 0 : (_data$data = data.data) === null || _data$data === void 0 ? void 0 : _data$data.status) === 'success') {
               var _data$data2;
-              var values = data === null || data === void 0 ? void 0 : (_data$data2 = data.data) === null || _data$data2 === void 0 ? void 0 : _data$data2.data;
-              var dataMessage = dataMessageRecieve;
-              findDataReadMessage(dataMessage, values).then(function (data) {
+              const values = data === null || data === void 0 ? void 0 : (_data$data2 = data.data) === null || _data$data2 === void 0 ? void 0 : _data$data2.data;
+              const dataMessage = dataMessageRecieve;
+              findDataReadMessage(dataMessage, values).then(data => {
                 setDataMessageReceive(data);
               });
             }
-          })["catch"](function (err) {
+          }).catch(err => {
             console.log(err);
             setFocusMessage(res._id);
             setFocusScreenContent('inbox');
@@ -323,16 +276,14 @@ var LeftContent = function LeftContent(_ref) {
       }, "Reply")))));
     }));
   };
-  var RenderOutbox = function RenderOutbox() {
+  const RenderOutbox = () => {
     if (loadingLeftContent) {
       return React__default.createElement(LoadingLeft, null);
     }
-    return React__default.createElement("div", null, dataMessageSender === null || dataMessageSender === void 0 ? void 0 : dataMessageSender.map(function (res, i) {
-      var pegawai = dataPegawai === null || dataPegawai === void 0 ? void 0 : dataPegawai.find(function (a) {
-        return a.nip === res.to;
-      });
+    return React__default.createElement("div", null, dataMessageSender === null || dataMessageSender === void 0 ? void 0 : dataMessageSender.map((res, i) => {
+      const pegawai = dataPegawai === null || dataPegawai === void 0 ? void 0 : dataPegawai.find(a => a.nip === res.to);
       return React__default.createElement("div", {
-        onClick: function onClick() {
+        onClick: () => {
           setFocusMessage(res._id);
           setFocusScreenContent('outbox');
         },
@@ -429,15 +380,15 @@ var LeftContent = function LeftContent(_ref) {
       boxShadow: '1px 1px 5px #243F57'
     }
   }, React__default.createElement(Button, {
-    onClick: function onClick() {
+    onClick: () => {
       setFocusMenuData(1);
       setLoadingLeftContent(true);
-      getMessageRecieve(BASE_PATH_NOTIF.get_by_recieve + nip + '/0/50', dataauthusman).then(function (data) {
+      getMessageRecieve(BASE_PATH_NOTIF.get_by_recieve + nip + '/0/50', dataauthusman).then(data => {
         var _data$data3;
         setLoadingLeftContent(false);
         if ((data === null || data === void 0 ? void 0 : (_data$data3 = data.data) === null || _data$data3 === void 0 ? void 0 : _data$data3.status) === 'success') {
           var _data$data4, _data$data5, _data$data5$data;
-          var val = data === null || data === void 0 ? void 0 : (_data$data4 = data.data) === null || _data$data4 === void 0 ? void 0 : _data$data4.data;
+          let val = data === null || data === void 0 ? void 0 : (_data$data4 = data.data) === null || _data$data4 === void 0 ? void 0 : _data$data4.data;
           setDataMessageReceive(val);
           if ((data === null || data === void 0 ? void 0 : (_data$data5 = data.data) === null || _data$data5 === void 0 ? void 0 : (_data$data5$data = _data$data5.data) === null || _data$data5$data === void 0 ? void 0 : _data$data5$data.length) > 0) {
             var _data$data6;
@@ -446,7 +397,7 @@ var LeftContent = function LeftContent(_ref) {
         } else {
           setDataMessageReceive([]);
         }
-      })["catch"](function (err) {
+      }).catch(err => {
         console.log(err);
         setLoadingLeftContent(false);
         setDataMessageReceive([]);
@@ -472,15 +423,15 @@ var LeftContent = function LeftContent(_ref) {
       fontFamily: DmSerif
     }
   }, "Inbox")), React__default.createElement(Button, {
-    onClick: function onClick() {
+    onClick: () => {
       setFocusMenuData(2);
       setLoadingLeftContent(true);
-      getMessageRecieve(BASE_PATH_NOTIF.get_by_from + nip + '/0/50', dataauthusman).then(function (data) {
+      getMessageRecieve(BASE_PATH_NOTIF.get_by_from + nip + '/0/50', dataauthusman).then(data => {
         var _data$data7;
         setLoadingLeftContent(false);
         if ((data === null || data === void 0 ? void 0 : (_data$data7 = data.data) === null || _data$data7 === void 0 ? void 0 : _data$data7.status) === 'success') {
           var _data$data8, _data$data9, _data$data9$data;
-          var val = data === null || data === void 0 ? void 0 : (_data$data8 = data.data) === null || _data$data8 === void 0 ? void 0 : _data$data8.data;
+          let val = data === null || data === void 0 ? void 0 : (_data$data8 = data.data) === null || _data$data8 === void 0 ? void 0 : _data$data8.data;
           setDataMessageSender(val);
           if ((data === null || data === void 0 ? void 0 : (_data$data9 = data.data) === null || _data$data9 === void 0 ? void 0 : (_data$data9$data = _data$data9.data) === null || _data$data9$data === void 0 ? void 0 : _data$data9$data.length) > 0) {
             var _data$data10;
@@ -489,7 +440,7 @@ var LeftContent = function LeftContent(_ref) {
         } else {
           setDataMessageSender([]);
         }
-      })["catch"](function (err) {
+      }).catch(err => {
         console.log(err);
         setLoadingLeftContent(true);
       });
@@ -515,7 +466,7 @@ var LeftContent = function LeftContent(_ref) {
     }
   }, "Outbox")), React__default.createElement(Button, {
     title: 'Coming soon',
-    onClick: function onClick() {
+    onClick: () => {
       setFocusMenuData(3);
     },
     style: {
@@ -538,7 +489,7 @@ var LeftContent = function LeftContent(_ref) {
       fontFamily: DmSerif
     }
   }, "Galery")), React__default.createElement(Button, {
-    onClick: function onClick() {
+    onClick: () => {
       setFocusMenuData(4);
     },
     style: {
@@ -563,16 +514,15 @@ var LeftContent = function LeftContent(_ref) {
   }, "who's online ?"))), focusMenuData === 1 ? React__default.createElement(RenderInbox, null) : focusMenuData === 2 ? React__default.createElement(RenderOutbox, null) : focusMenuData === 4 ? React__default.createElement(SeeWhoOnline, null) : React__default.createElement(GalleryPage, null));
 };
 
-var RightContent = function RightContent(_ref) {
-  var dataMessageRecieve = _ref.dataMessageRecieve,
-    dataMessageSender = _ref.dataMessageSender,
-    focusMessage = _ref.focusMessage,
-    loadingRightContent = _ref.loadingRightContent;
-  var gabungDataMessage = [].concat(dataMessageRecieve, dataMessageSender);
-  var findMessageFocus = gabungDataMessage === null || gabungDataMessage === void 0 ? void 0 : gabungDataMessage.find(function (a) {
-    return (a === null || a === void 0 ? void 0 : a._id) == focusMessage;
-  });
-  var ref = React__default.useRef(null);
+const RightContent = ({
+  dataMessageRecieve,
+  dataMessageSender,
+  focusMessage,
+  loadingRightContent
+}) => {
+  let gabungDataMessage = [...dataMessageRecieve, ...dataMessageSender];
+  let findMessageFocus = gabungDataMessage === null || gabungDataMessage === void 0 ? void 0 : gabungDataMessage.find(a => (a === null || a === void 0 ? void 0 : a._id) == focusMessage);
+  let ref = React__default.useRef(null);
   if (findMessageFocus === undefined) {
     return React__default.createElement("div", {
       style: {
@@ -676,36 +626,23 @@ var RightContent = function RightContent(_ref) {
   })));
 };
 
-var NewMail = function NewMail(_ref) {
-  var open = _ref.open,
-    setOpen = _ref.setOpen,
-    dataauthusman = _ref.dataauthusman,
-    name = _ref.name,
-    nip = _ref.nip,
-    funtionGetDataPegawai = _ref.funtionGetDataPegawai,
-    setDataMessageSender = _ref.setDataMessageSender;
-  var _React$useState = React__default.useState(true),
-    loadingEditor = _React$useState[0],
-    setLoadingEditor = _React$useState[1];
-  var _React$useState2 = React__default.useState(''),
-    valueEditor = _React$useState2[0],
-    setValueEditor = _React$useState2[1];
-  var _React$useState3 = React__default.useState([]),
-    dataPegawai = _React$useState3[0],
-    setDataPegawai = _React$useState3[1];
-  var _React$useState4 = React__default.useState([]),
-    dataEmail = _React$useState4[0],
-    setDataEmail = _React$useState4[1];
-  var _React$useState5 = React__default.useState(''),
-    valSubject = _React$useState5[0],
-    setValSubject = _React$useState5[1];
-  var _React$useState6 = React__default.useState(''),
-    valSearch = _React$useState6[0],
-    setValSearch = _React$useState6[1];
-  var _React$useState7 = React__default.useState(false),
-    loadingNewMail = _React$useState7[0],
-    setLoadingNewMail = _React$useState7[1];
-  var clearForm = function clearForm() {
+const NewMail = ({
+  open,
+  setOpen,
+  dataauthusman,
+  name,
+  nip,
+  funtionGetDataPegawai,
+  setDataMessageSender
+}) => {
+  const [loadingEditor, setLoadingEditor] = React__default.useState(true);
+  const [valueEditor, setValueEditor] = React__default.useState('');
+  const [dataPegawai, setDataPegawai] = React__default.useState([]);
+  const [dataEmail, setDataEmail] = React__default.useState([]);
+  const [valSubject, setValSubject] = React__default.useState('');
+  const [valSearch, setValSearch] = React__default.useState('');
+  const [loadingNewMail, setLoadingNewMail] = React__default.useState(false);
+  const clearForm = () => {
     setValueEditor('');
     setDataEmail([]);
     setDataPegawai([]);
@@ -714,10 +651,10 @@ var NewMail = function NewMail(_ref) {
     setLoadingNewMail(false);
     setOpen(false);
   };
-  var postMessageMany = function postMessageMany() {
+  const postMessageMany = () => {
     setLoadingNewMail(true);
-    var y = [];
-    dataEmail === null || dataEmail === void 0 ? void 0 : dataEmail.forEach(function (a) {
+    let y = [];
+    dataEmail === null || dataEmail === void 0 ? void 0 : dataEmail.forEach(a => {
       y.push({
         from: a === null || a === void 0 ? void 0 : a.from,
         to: a === null || a === void 0 ? void 0 : a.to,
@@ -729,25 +666,25 @@ var NewMail = function NewMail(_ref) {
         kategori: 'pesan'
       });
     });
-    var arrayMessage = {
+    let arrayMessage = {
       array_message: y
     };
-    postManyMessage(dataauthusman, arrayMessage, nip).then(function (data) {
+    postManyMessage(dataauthusman, arrayMessage, nip).then(data => {
       var _data$data;
       if ((data === null || data === void 0 ? void 0 : (_data$data = data.data) === null || _data$data === void 0 ? void 0 : _data$data.status) === 'success') {
-        getMessageRecieve(BASE_PATH_NOTIF.get_by_from + nip + '/0/50', dataauthusman).then(function (data) {
+        getMessageRecieve(BASE_PATH_NOTIF.get_by_from + nip + '/0/50', dataauthusman).then(data => {
           var _data$data2;
           if ((data === null || data === void 0 ? void 0 : (_data$data2 = data.data) === null || _data$data2 === void 0 ? void 0 : _data$data2.status) === 'success') {
             var _data$data3, _data$data4, _data$data4$data;
             clearForm();
-            var val = data === null || data === void 0 ? void 0 : (_data$data3 = data.data) === null || _data$data3 === void 0 ? void 0 : _data$data3.data;
+            let val = data === null || data === void 0 ? void 0 : (_data$data3 = data.data) === null || _data$data3 === void 0 ? void 0 : _data$data3.data;
             setDataMessageSender(val);
             if ((data === null || data === void 0 ? void 0 : (_data$data4 = data.data) === null || _data$data4 === void 0 ? void 0 : (_data$data4$data = _data$data4.data) === null || _data$data4$data === void 0 ? void 0 : _data$data4$data.length) > 0) {
               var _data$data5;
               funtionGetDataPegawai(data === null || data === void 0 ? void 0 : (_data$data5 = data.data) === null || _data$data5 === void 0 ? void 0 : _data$data5.data);
             }
           }
-        })["catch"](function (err) {
+        }).catch(err => {
           console.log(err);
           clearForm();
           notification.error({
@@ -755,7 +692,7 @@ var NewMail = function NewMail(_ref) {
           });
         });
       }
-    })["catch"](function (err) {
+    }).catch(err => {
       console.log(err);
       clearForm();
       notification.error({
@@ -765,7 +702,7 @@ var NewMail = function NewMail(_ref) {
   };
   return React__default.createElement(Modal, {
     open: open,
-    onCancel: function onCancel() {
+    onCancel: () => {
       clearForm();
     },
     bodyStyle: {
@@ -806,39 +743,33 @@ var NewMail = function NewMail(_ref) {
     },
     size: 'large',
     showSearch: true,
-    value: dataEmail === null || dataEmail === void 0 ? void 0 : dataEmail.map(function (a) {
+    value: dataEmail === null || dataEmail === void 0 ? void 0 : dataEmail.map(a => {
       return a === null || a === void 0 ? void 0 : a.to;
     }),
-    onDeselect: function onDeselect(e) {
-      var j = dataEmail === null || dataEmail === void 0 ? void 0 : dataEmail.filter(function (a) {
-        return (a === null || a === void 0 ? void 0 : a.to) !== e;
-      });
+    onDeselect: e => {
+      const j = dataEmail === null || dataEmail === void 0 ? void 0 : dataEmail.filter(a => (a === null || a === void 0 ? void 0 : a.to) !== e);
       setDataEmail(j);
     },
     searchValue: valSearch,
-    onSearch: function onSearch(e) {
+    onSearch: e => {
       setValSearch(e);
     },
-    onSelect: function onSelect(e) {
-      var g = dataPegawai === null || dataPegawai === void 0 ? void 0 : dataPegawai.find(function (a) {
-        return a.nip === e;
-      });
-      var o = {
+    onSelect: e => {
+      const g = dataPegawai === null || dataPegawai === void 0 ? void 0 : dataPegawai.find(a => a.nip === e);
+      let o = {
         name_receiver: g === null || g === void 0 ? void 0 : g.nama_pegawai,
         to: g === null || g === void 0 ? void 0 : g.nip,
         name_sender: name,
         from: nip
       };
-      setDataEmail(function (a) {
-        return [].concat(a, [o]);
-      });
+      setDataEmail(a => [...a, o]);
     },
-    onDropdownVisibleChange: function onDropdownVisibleChange() {
-      getPegawai(dataauthusman, '100', '0').then(function (data) {
+    onDropdownVisibleChange: () => {
+      getPegawai(dataauthusman, '100', '0').then(data => {
         var _data$data6;
         if ((data === null || data === void 0 ? void 0 : (_data$data6 = data.data) === null || _data$data6 === void 0 ? void 0 : _data$data6.status) === 'Success') {
           var _data$data7;
-          var val = data === null || data === void 0 ? void 0 : (_data$data7 = data.data) === null || _data$data7 === void 0 ? void 0 : _data$data7.data;
+          let val = data === null || data === void 0 ? void 0 : (_data$data7 = data.data) === null || _data$data7 === void 0 ? void 0 : _data$data7.data;
           setDataPegawai(val);
         }
       });
@@ -857,8 +788,8 @@ var NewMail = function NewMail(_ref) {
         padding: 0,
         margin: 0
       },
-      onClick: function onClick() {
-        getPegawaiByNama(dataauthusman, valSearch).then(function (data) {
+      onClick: () => {
+        getPegawaiByNama(dataauthusman, valSearch).then(data => {
           var _data$data8;
           if ((data === null || data === void 0 ? void 0 : (_data$data8 = data.data) === null || _data$data8 === void 0 ? void 0 : _data$data8.status) === 'Success') {
             var _data$data9;
@@ -868,7 +799,7 @@ var NewMail = function NewMail(_ref) {
       }
     })),
     filterOption: false
-  }, dataPegawai === null || dataPegawai === void 0 ? void 0 : dataPegawai.map(function (a, i) {
+  }, dataPegawai === null || dataPegawai === void 0 ? void 0 : dataPegawai.map((a, i) => {
     return React__default.createElement(Select.Option, {
       key: i,
       value: a === null || a === void 0 ? void 0 : a.nip
@@ -894,7 +825,7 @@ var NewMail = function NewMail(_ref) {
     },
     showCount: true,
     value: valSubject,
-    onChange: function onChange(e) {
+    onChange: e => {
       setValSubject(e.target.value);
     }
   })), loadingEditor ? React__default.createElement("div", {
@@ -912,10 +843,10 @@ var NewMail = function NewMail(_ref) {
     disabled: loadingNewMail,
     value: valueEditor,
     apiKey: '36iqfcag9kzushye6d2mkf16270vqoj0k83nw2w516wzwozt',
-    onEditorChange: function onEditorChange(e) {
+    onEditorChange: e => {
       setValueEditor(e);
     },
-    onInit: function onInit() {
+    onInit: () => {
       setLoadingEditor(false);
     },
     init: {
@@ -942,25 +873,24 @@ var NewMail = function NewMail(_ref) {
       color: 'white',
       fontFamily: DmSerif
     },
-    onClick: function onClick() {
+    onClick: () => {
       postMessageMany();
     }
   }, "Send"), React__default.createElement(Button, {
-    onClick: function onClick() {
+    onClick: () => {
       clearForm();
     }
   }, "Cancel"))));
 };
 
-var RightContentOutbox = function RightContentOutbox(_ref) {
-  var dataMessageRecieve = _ref.dataMessageRecieve,
-    dataMessageSender = _ref.dataMessageSender,
-    focusMessage = _ref.focusMessage;
-  var gabungDataMessage = [].concat(dataMessageRecieve, dataMessageSender);
-  var findMessageFocus = gabungDataMessage === null || gabungDataMessage === void 0 ? void 0 : gabungDataMessage.find(function (a) {
-    return (a === null || a === void 0 ? void 0 : a._id) == focusMessage;
-  });
-  var ref = React__default.useRef(null);
+const RightContentOutbox = ({
+  dataMessageRecieve,
+  dataMessageSender,
+  focusMessage
+}) => {
+  let gabungDataMessage = [...dataMessageRecieve, ...dataMessageSender];
+  let findMessageFocus = gabungDataMessage === null || gabungDataMessage === void 0 ? void 0 : gabungDataMessage.find(a => (a === null || a === void 0 ? void 0 : a._id) == focusMessage);
+  let ref = React__default.useRef(null);
   if (findMessageFocus === undefined) {
     return React__default.createElement("div", {
       style: {
@@ -1044,31 +974,28 @@ var RightContentOutbox = function RightContentOutbox(_ref) {
   })));
 };
 
-var Content = function Content(_ref) {
-  var open = _ref.open,
-    setOpen = _ref.setOpen,
-    dataMessageRecieve = _ref.dataMessageRecieve,
-    dataMessageSender = _ref.dataMessageSender,
-    focusMessage = _ref.focusMessage,
-    setFocusMessage = _ref.setFocusMessage,
-    datauser = _ref.datauser,
-    dataPegawai = _ref.dataPegawai,
-    dataauthusman = _ref.dataauthusman,
-    name = _ref.name,
-    nip = _ref.nip,
-    setDataMessageReceive = _ref.setDataMessageReceive,
-    setDataMessageSender = _ref.setDataMessageSender,
-    funtionGetDataPegawai = _ref.funtionGetDataPegawai,
-    loadingRightContent = _ref.loadingRightContent,
-    setLoadingRightContent = _ref.setLoadingRightContent,
-    loadingLeftContent = _ref.loadingLeftContent,
-    setLoadingLeftContent = _ref.setLoadingLeftContent;
-  var _React$useState = React__default.useState(false),
-    openNewMail = _React$useState[0],
-    setOpenNewMail = _React$useState[1];
-  var _React$useState2 = React__default.useState(""),
-    focusScreenContent = _React$useState2[0],
-    setFocusScreenContent = _React$useState2[1];
+const Content = ({
+  open,
+  setOpen,
+  dataMessageRecieve,
+  dataMessageSender,
+  focusMessage,
+  setFocusMessage,
+  datauser,
+  dataPegawai,
+  dataauthusman,
+  name,
+  nip,
+  setDataMessageReceive,
+  setDataMessageSender,
+  funtionGetDataPegawai,
+  loadingRightContent,
+  setLoadingRightContent,
+  loadingLeftContent,
+  setLoadingLeftContent
+}) => {
+  const [openNewMail, setOpenNewMail] = React__default.useState(false);
+  const [focusScreenContent, setFocusScreenContent] = React__default.useState("");
   return React__default.createElement(Drawer, {
     placement: "right",
     open: open,
@@ -1139,7 +1066,7 @@ var Content = function Content(_ref) {
       backgroundColor: "#15324D",
       zIndex: 1
     },
-    onClose: function onClose() {
+    onClose: () => {
       setOpen(false);
     },
     style: {
@@ -1185,7 +1112,7 @@ var Content = function Content(_ref) {
         fontSize: 20
       }
     }),
-    onClick: function onClick() {
+    onClick: () => {
       setOpenNewMail(true);
     }
   }), React__default.createElement(NewMail, {
@@ -1199,163 +1126,138 @@ var Content = function Content(_ref) {
   })));
 };
 
-var MessageComponent = function MessageComponent(_ref) {
-  var style = _ref.style,
-    nip = _ref.nip,
-    nama = _ref.nama,
-    id_user = _ref.id_user,
-    kode_group = _ref.kode_group,
-    token_lama = _ref.token_lama,
-    token_baru = _ref.token_baru,
-    url_foto_user = _ref.url_foto_user;
-  var _React$useState = useState(false),
-    open = _React$useState[0],
-    setOpen = _React$useState[1];
-  var _React$useState2 = useState([]),
-    dataMessageRecieve = _React$useState2[0],
-    setDataMessageRecieve = _React$useState2[1];
-  var _React$useState3 = useState([]),
-    dataMessageSender = _React$useState3[0],
-    setDataMessageSender = _React$useState3[1];
-  var _React$useState4 = useState(''),
-    focusMessage = _React$useState4[0],
-    setFocusMessage = _React$useState4[1];
-  var _React$useState5 = useState([]),
-    dataPegawai = _React$useState5[0],
-    setDataPegawai = _React$useState5[1];
-  var _React$useState6 = useState(null),
-    idMessageRead = _React$useState6[0],
-    setIdMessageRead = _React$useState6[1];
-  var _React$useState7 = useState(0),
-    countMessage = _React$useState7[0],
-    setCountMessage = _React$useState7[1];
-  var _React$useState8 = useState(false),
-    loadingRightContent = _React$useState8[0],
-    setLoadingRightContent = _React$useState8[1];
-  var _React$useState9 = useState(false),
-    loadingLeftContent = _React$useState9[0],
-    setLoadingLeftContent = _React$useState9[1];
-  var dataauthusman = {
+const MessageComponent = ({
+  style,
+  nip,
+  nama,
+  id_user,
+  kode_group,
+  token_lama,
+  token_baru,
+  url_foto_user
+}) => {
+  const [open, setOpen] = useState(false);
+  const [dataMessageRecieve, setDataMessageRecieve] = useState([]);
+  const [dataMessageSender, setDataMessageSender] = useState([]);
+  const [focusMessage, setFocusMessage] = useState('');
+  const [dataPegawai, setDataPegawai] = useState([]);
+  const [idMessageRead, setIdMessageRead] = useState(null);
+  const [countMessage, setCountMessage] = useState(0);
+  const [loadingRightContent, setLoadingRightContent] = useState(false);
+  const [loadingLeftContent, setLoadingLeftContent] = useState(false);
+  const dataauthusman = {
     id_user: id_user,
     kode_group: kode_group,
     token_lama: token_lama,
     token_baru: token_baru
   };
-  var datauser = {
+  const datauser = {
     nip: nip,
     nama: nama,
     url_foto: url_foto_user
   };
-  useEffect(function () {
+  useEffect(() => {
     socketNotif.emit('join_room_testing', {
       roomId: nip
     });
     socketNotif.connect();
   }, []);
-  useEffect(function () {
-    var counts = dataMessageRecieve === null || dataMessageRecieve === void 0 ? void 0 : dataMessageRecieve.filter(function (a) {
-      return a.status_read === false;
-    });
+  useEffect(() => {
+    const counts = dataMessageRecieve === null || dataMessageRecieve === void 0 ? void 0 : dataMessageRecieve.filter(a => a.status_read === false);
     setCountMessage(counts === null || counts === void 0 ? void 0 : counts.length);
   }, [dataMessageRecieve]);
-  useEffect(function () {
-    socketNotif.on('message', function (data) {
+  useEffect(() => {
+    socketNotif.on('message', data => {
       if (data.response === 'receive_message') {
         var _data$dataMessage;
         notification.info({
           message: 'Anda Mempunyai Pesan Baru'
         });
-        setDataMessageRecieve(function (a) {
-          return [data === null || data === void 0 ? void 0 : data.dataMessage].concat(a);
-        });
+        setDataMessageRecieve(a => [data === null || data === void 0 ? void 0 : data.dataMessage, ...a]);
         getDataPegawaiByNip(dataauthusman, [{
           nip: data === null || data === void 0 ? void 0 : (_data$dataMessage = data.dataMessage) === null || _data$dataMessage === void 0 ? void 0 : _data$dataMessage.from
-        }]).then(function (res) {
+        }]).then(res => {
           var _res$data;
           if ((res === null || res === void 0 ? void 0 : (_res$data = res.data) === null || _res$data === void 0 ? void 0 : _res$data.status) === 'Success') {
-            setDataPegawai(function (a) {
+            setDataPegawai(a => {
               var _res$data2;
-              return [].concat(a, res === null || res === void 0 ? void 0 : (_res$data2 = res.data) === null || _res$data2 === void 0 ? void 0 : _res$data2.data);
+              return [...a, ...(res === null || res === void 0 ? void 0 : (_res$data2 = res.data) === null || _res$data2 === void 0 ? void 0 : _res$data2.data)];
             });
           }
         });
       }
     });
-    return function () {
+    return () => {
       socketNotif.close();
     };
   }, [socketNotif]);
-  useEffect(function () {
-    socketNotif.on('message', function (data) {
+  useEffect(() => {
+    socketNotif.on('message', data => {
       if (data.response === 'status_read') {
         setIdMessageRead(data.dataMessage._id);
       }
     });
-    return function () {
+    return () => {
       socketNotif.close();
     };
   }, [socketNotif]);
-  useEffect(function () {
+  useEffect(() => {
     if (idMessageRead !== null) {
       updateRead();
     }
   }, [idMessageRead]);
-  var updateRead = function updateRead() {
-    var p = [].concat(dataMessageSender);
-    var l = dataMessageSender.some(function (m) {
-      return m._id === idMessageRead;
-    });
+  const updateRead = () => {
+    const p = [...dataMessageSender];
+    const l = dataMessageSender.some(m => m._id === idMessageRead);
     if (l === true) {
-      var k = dataMessageSender.findIndex(function (a) {
-        return a._id === idMessageRead;
-      });
+      const k = dataMessageSender.findIndex(a => a._id === idMessageRead);
       p[k].status_read = true;
       setDataMessageSender(p);
       setIdMessageRead(null);
     }
   };
-  var funtionGetDataPegawai = function funtionGetDataPegawai(val) {
-    var tampungNip = [];
-    var tampungNip2 = [];
-    val === null || val === void 0 ? void 0 : val.forEach(function (a) {
+  const funtionGetDataPegawai = val => {
+    const tampungNip = [];
+    const tampungNip2 = [];
+    val === null || val === void 0 ? void 0 : val.forEach(a => {
       tampungNip.push(a.from);
       tampungNip.push(a.to);
     });
     if (tampungNip.length > 0) {
-      var u = new Set(tampungNip);
-      u.forEach(function (a) {
+      const u = new Set(tampungNip);
+      u.forEach(a => {
         tampungNip2.push({
           nip: a
         });
       });
-      getDataPegawaiByNip(dataauthusman, tampungNip2).then(function (res) {
+      getDataPegawaiByNip(dataauthusman, tampungNip2).then(res => {
         var _res$data3;
         console.log('asasd', val, res);
         if ((res === null || res === void 0 ? void 0 : (_res$data3 = res.data) === null || _res$data3 === void 0 ? void 0 : _res$data3.status) === 'Success') {
-          setDataPegawai(function (a) {
+          setDataPegawai(a => {
             var _res$data4;
-            return [].concat(a, res === null || res === void 0 ? void 0 : (_res$data4 = res.data) === null || _res$data4 === void 0 ? void 0 : _res$data4.data);
+            return [...a, ...(res === null || res === void 0 ? void 0 : (_res$data4 = res.data) === null || _res$data4 === void 0 ? void 0 : _res$data4.data)];
           });
         }
       });
     }
   };
-  useEffect(function () {
+  useEffect(() => {
     setLoadingLeftContent(true);
-    createColllection(dataauthusman, nip).then(function (response) {
+    createColllection(dataauthusman, nip).then(response => {
       var _response$data;
       if ((response === null || response === void 0 ? void 0 : (_response$data = response.data) === null || _response$data === void 0 ? void 0 : _response$data.status) === 'done') ; else {
         var _response$data2;
-        var val = response === null || response === void 0 ? void 0 : (_response$data2 = response.data) === null || _response$data2 === void 0 ? void 0 : _response$data2.children;
+        let val = response === null || response === void 0 ? void 0 : (_response$data2 = response.data) === null || _response$data2 === void 0 ? void 0 : _response$data2.children;
         setDataMessageRecieve(val);
       }
     });
-    getMessageRecieve(BASE_PATH_NOTIF.get_by_recieve + nip + '/0/50', dataauthusman).then(function (data) {
+    getMessageRecieve(BASE_PATH_NOTIF.get_by_recieve + nip + '/0/50', dataauthusman).then(data => {
       var _data$data;
       setLoadingLeftContent(false);
       if ((data === null || data === void 0 ? void 0 : (_data$data = data.data) === null || _data$data === void 0 ? void 0 : _data$data.status) === 'success') {
         var _data$data2, _data$data3, _data$data3$data;
-        var val = data === null || data === void 0 ? void 0 : (_data$data2 = data.data) === null || _data$data2 === void 0 ? void 0 : _data$data2.data;
+        let val = data === null || data === void 0 ? void 0 : (_data$data2 = data.data) === null || _data$data2 === void 0 ? void 0 : _data$data2.data;
         setDataMessageRecieve(val);
         if ((data === null || data === void 0 ? void 0 : (_data$data3 = data.data) === null || _data$data3 === void 0 ? void 0 : (_data$data3$data = _data$data3.data) === null || _data$data3$data === void 0 ? void 0 : _data$data3$data.length) > 0) {
           var _data$data4;
@@ -1364,17 +1266,17 @@ var MessageComponent = function MessageComponent(_ref) {
       } else {
         setDataMessageRecieve([]);
       }
-    })["catch"](function (err) {
+    }).catch(err => {
+      console.log(err);
       setLoadingLeftContent(false);
       setDataMessageRecieve([]);
-      console.log(err);
     });
-    getMessageRecieve(BASE_PATH_NOTIF.get_by_from + nip + '/0/50', dataauthusman).then(function (data) {
+    getMessageRecieve(BASE_PATH_NOTIF.get_by_from + nip + '/0/50', dataauthusman).then(data => {
       var _data$data5;
       setLoadingLeftContent(false);
       if ((data === null || data === void 0 ? void 0 : (_data$data5 = data.data) === null || _data$data5 === void 0 ? void 0 : _data$data5.status) === 'success') {
         var _data$data6, _data$data7, _data$data7$data;
-        var val = data === null || data === void 0 ? void 0 : (_data$data6 = data.data) === null || _data$data6 === void 0 ? void 0 : _data$data6.data;
+        let val = data === null || data === void 0 ? void 0 : (_data$data6 = data.data) === null || _data$data6 === void 0 ? void 0 : _data$data6.data;
         setDataMessageSender(val);
         if ((data === null || data === void 0 ? void 0 : (_data$data7 = data.data) === null || _data$data7 === void 0 ? void 0 : (_data$data7$data = _data$data7.data) === null || _data$data7$data === void 0 ? void 0 : _data$data7$data.length) > 0) {
           var _data$data8;
@@ -1383,10 +1285,10 @@ var MessageComponent = function MessageComponent(_ref) {
       } else {
         setDataMessageSender([]);
       }
-    })["catch"](function (err) {
+    }).catch(err => {
+      console.log(err);
       setLoadingLeftContent(false);
       setDataMessageSender([]);
-      console.log(err);
     });
   }, []);
   return createElement("div", {
@@ -1402,7 +1304,7 @@ var MessageComponent = function MessageComponent(_ref) {
         fontSize: 20
       }
     }),
-    onClick: function onClick() {
+    onClick: () => {
       setOpen(true);
     }
   })), createElement(Content, {
@@ -1427,5 +1329,5 @@ var MessageComponent = function MessageComponent(_ref) {
   }));
 };
 
-export { MessageComponent };
+export default MessageComponent;
 //# sourceMappingURL=index.modern.js.map
